@@ -35,7 +35,10 @@ def train_model(model, train_loader, test_loader, train_loader_1, device, args):
     optimizer = optim.SGD(model.parameters(), lr=args.lr, weight_decay=0.00005)
     center = torch.FloatTensor(feature_space).mean(dim=0)
     if args.angular:
+        """Unlike the standard contrastive learning, where the angular distances are measured in relation to the origin, 
+        we measure the angular distances in relation to the normalized center of the extracted features."""
         center = F.normalize(center, dim=-1)
+        
     center = center.to(device)
     for epoch in range(args.epochs):
         running_loss = run_epoch(model, train_loader_1, optimizer, center, device, args.angular)
