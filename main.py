@@ -8,6 +8,8 @@ import torch.nn.functional as F
 
 
 def contrastive_loss(out_1, out_2):
+    """ the extracted features are scaled to the unit sphere (by $L_2$
+        normalization) resulting in their respective φ feature representations"""
     out_1 = F.normalize(out_1, dim=-1)
     out_2 = F.normalize(out_2, dim=-1)
     bs = out_1.size(0)
@@ -57,6 +59,8 @@ def run_epoch(model, train_loader, optimizer, center, device, is_angular):
 
         out_1 = model(img1)
         out_2 = model(img2)
+        """ For each representation, we
+            define its mean-shifted counterpart, by subtracting the center and normalizing to the unit sphere"""
         out_1 = out_1 - center
         out_2 = out_2 - center
 
